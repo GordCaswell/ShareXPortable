@@ -6,7 +6,16 @@ Var AutoCheckUpdate
 Var CheckPreReleaseUpdates
 Var CustomLanguage
 
-${SegmentInit} ;; Heavily borrowed from PAL's Language.nsh Segment File as ShareX's language handling is in a format similar to PortableApps.comLocaleName, whereas the folders are in a format similar to glibc
+${SegmentInit}
+	${If} ${FileExists} "$EXEDIR\App\ShareX\Portable"
+		Rename "$EXEDIR\App\ShareX\Portable" "$EXEDIR\App\ShareX\PortableApps"
+	${EndIf}
+	${If} ${FileExists} "$EXEDIR\App\ShareX\ShareX\*.*"
+		CopyFiles /SILENT "$EXEDIR\App\ShareX\ShareX\*.*" "$EXEDIR\Data"
+		RMDir /r "$EXEDIR\App\ShareX\ShareX"
+	${EndIf}
+
+;; Heavily borrowed from PAL's Language.nsh Segment File as ShareX's language handling is in a format similar to PortableApps.comLocaleName, whereas the folders are in a format similar to glibc
 	ReadEnvStr $0 PortableApps.comLanguageCode
 	ReadEnvStr $1 PAL:_IgnoreLanguage
 	${If} $0 == ""
