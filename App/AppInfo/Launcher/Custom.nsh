@@ -9,13 +9,42 @@ Var CheckPreReleaseUpdates
 Var CustomLanguage
 
 ${SegmentInit}
-	${If} ${FileExists} "$EXEDIR\App\ShareX\Portable"
-		Rename "$EXEDIR\App\ShareX\Portable" "$EXEDIR\App\ShareX\PortableApps"
+	${If} ${FileExists} "${PACKAGE}\App\ShareX\ShareX\*.*"
+		CopyFiles /SILENT "${PACKAGE}\App\ShareX\ShareX\*.*" "${PACKAGE}\Data\ShareX"
+		RMDir /r "${PACKAGE}\App\ShareX\ShareX"
 	${EndIf}
-	${If} ${FileExists} "$EXEDIR\App\ShareX\ShareX\*.*"
-		CopyFiles /SILENT "$EXEDIR\App\ShareX\ShareX\*.*" "$EXEDIR\Data"
-		RMDir /r "$EXEDIR\App\ShareX\ShareX"
+	${If} ${FileExists} "${PACKAGE}\Data\ShareX\*.*"
+		${AndIf} ${FileExists} "${PACKAGE}\Data\Backup\*.*"
+		Goto MoveShareXData
+	${ElseIf} ${FileExists} "${PACKAGE}\Data\Backup\*.*"
+		Goto MoveShareXData
 	${EndIf}
+	MoveShareXData:
+		${If} ${FileExists} "${PACKAGE}\Data\Backup\*.*"
+			CopyFiles /SILENT "${PACKAGE}\Data\Backup\*.*" "${PACKAGE}\Data\ShareX\Backup"
+			RMDir /r "${PACKAGE}\Data\Backup"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\ImageEffects\*.*"
+			CopyFiles /SILENT "${PACKAGE}\Data\ImageEffects\*.*" "${PACKAGE}\Data\ShareX\ImageEffects"
+			RMDir /r "${PACKAGE}\Data\ImageEffects"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\Logs\*.*"
+			CopyFiles /SILENT "${PACKAGE}\Data\Logs\*.*" "${PACKAGE}\Data\ShareX\Logs"
+			RMDir /r "${PACKAGE}\Data\Logs"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\Screenshots\*.*"
+			CopyFiles /SILENT "${PACKAGE}\Data\Screenshots\*.*" "${PACKAGE}\Data\ShareX\Screenshots"
+			RMDir /r "${PACKAGE}\Data\Screenshots"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\Tools\*.*"
+			CopyFiles /SILENT "${PACKAGE}\Data\Tools\*.*" "${PACKAGE}\Data\ShareX\Tools"
+			RMDir /r "${PACKAGE}\Data\Tools"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\ApplicationConfig.json"
+			Rename "${PACKAGE}\Data\ApplicationConfig.json" "${PACKAGE}\Data\ShareX\ApplicationConfig.json"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\History.json"
+			Rename "${PACKAGE}\Data\History.json" "${PACKAGE}\Data\ShareX\History.json"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\HotkeysConfig.json"
+			Rename "${PACKAGE}\Data\HotkeysConfig.json" "${PACKAGE}\Data\ShareX\HotkeysConfig.json"
+		${OrIf} ${FileExists} "${PACKAGE}\Data\UploadersConfig.json"
+			Rename "${PACKAGE}\Data\UploadersConfig.json" "${PACKAGE}\Data\ShareX\UplaodersConfig.json"
+		${EndIf}
+
 
 ;; Heavily borrowed from PAL's Language.nsh Segment File as ShareX's language handling is in a format similar to PortableApps.comLocaleName, whereas the folders are in a format similar to glibc
 	ReadEnvStr $0 PortableApps.comLanguageCode
@@ -94,6 +123,12 @@ ${SegmentInit}
 				${Else}
 					Goto SetToEnglish
 				${EndIf}
+			${ElseIf} $5 == "Japanese";
+				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\ja-JP\*.*"
+					Goto WriteLanguage
+				${Else}
+					Goto SetToEnglish
+				${EndIf}
 			${ElseIf} $5 == "Korean";
 				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\ko-KR\*.*"
 					Goto WriteLanguage
@@ -106,12 +141,36 @@ ${SegmentInit}
 				${Else}
 					Goto SetToEnglish
 				${EndIf}
+			${ElseIf} $5 == "Persian";
+				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\fa-IR\*.*"
+					Goto WriteLanguage
+				${Else}
+					Goto SetToEnglish
+				${EndIf}
+			${ElseIf} $5 == "Polish";
+				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\pl\*.*"
+					Goto WriteLanguage
+				${Else}
+					Goto SetToEnglish
+				${EndIf}
+			${ElseIf} $5 == "Portuguese";
+				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\pt-PT\*.*"
+					Goto WriteLanguage
+				${Else}
+					Goto SetToEnglish
+				${EndIf}	
 			${ElseIf} $5 == "Portuguese-Brazil";
 				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\pt-BR\*.*"
 					Goto WriteLanguage
 				${Else}
 					Goto SetToEnglish
 				${EndIf}
+			${ElseIf} $5 == "Romanian";
+				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\ro\*.*"
+					Goto WriteLanguage
+				${Else}
+					Goto SetToEnglish
+				${EndIf}	
 			${ElseIf} $5 == "Russian";
 				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\ru\*.*"
 					Goto WriteLanguage
@@ -120,6 +179,12 @@ ${SegmentInit}
 				${EndIf}
 			${ElseIf} $5 == "Simplified Chinese";
 				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\zh-CN\*.*"
+					Goto WriteLanguage
+				${Else}
+					Goto SetToEnglish
+				${EndIf}
+			${ElseIf} $5 == "Spanish";
+				${If} ${FileExists} "{PACKAGE}\App\ShareX\Languages\es\*.*"
 					Goto WriteLanguage
 				${Else}
 					Goto SetToEnglish

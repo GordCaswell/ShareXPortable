@@ -1,16 +1,9 @@
-!macro CustomCodePreInstall
-	${If} ${FileExists} "$INSTDIR\App\ShareX\Portable"
-		Rename "$INSTDIR\App\ShareX\Portable" "$INSTDIR\App\ShareX\PortableApps"
-		
-	${EndIf}
-!macroend
-
 !macro CustomCodePostInstall
-	${If} ${FileExists} "$INSTDIR\App\ShareX\Portable"
-		Rename "$INSTDIR\App\ShareX\Portable" "$INSTDIR\App\ShareX\PortableApps"
-	${EndIf}
 	${If} ${FileExists} "$INSTDIR\App\ShareX\ShareX\*.*"
-			CopyFiles /SILENT "$INSTDIR\App\ShareX\ShareX\*.*" "$INSTDIR\Data"
+			CopyFiles /SILENT "$INSTDIR\App\ShareX\ShareX\*.*" "$INSTDIR\Data\ShareX\*.*"
 			RMDir /r "$INSTDIR\App\ShareX\ShareX"
+	${EndIf}
+	${If} ${FileExists} "$INSTDIR\App\ShareX\PortableApps"
+		Rename "$INSTDIR\App\ShareX\PortableApps" "$INSTDIR\App\ShareX\Portable"
 	${EndIf}
 !macroend
